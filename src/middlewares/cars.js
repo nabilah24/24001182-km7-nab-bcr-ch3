@@ -84,9 +84,10 @@ exports.validateCreateCar = (req, res, next) => {
     capacity: Number(req.body.capacity),
     year: Number(req.body.year),
     available: req.body.available === 'true',
-    options: Array.isArray(req.body.options) ? req.body.options : [res.body.options],
+    options: Array.isArray(req.body.options) ? req.body.options : [req.body.options],
     specs: Array.isArray(req.body.specs) ? req.body.specs : [req.body.specs],
   };
+  
 
   next();
 };
@@ -153,9 +154,10 @@ exports.validateUpdateCar = (req, res, next) => {
     capacity: Number(req.body.capacity),
     year: Number(req.body.year),
     available: req.body.available === 'true',
-    options: Array.isArray(req.body.options) ? req.body.options : [res.body.options],
+    options: Array.isArray(req.body.options) ? req.body.options : [req.body.options],
     specs: Array.isArray(req.body.specs) ? req.body.specs : [req.body.specs],
   };
+  
 
   next();
 };

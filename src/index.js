@@ -8,7 +8,7 @@ const router = require("express/lib/router");
 
 // Make initiate express application
 const app = express();
-const port = process.env.PORT || 4000;
+const port = process.env.PORT || 3000;
 
 // Activate to body parser/reader (req.body)
 app.use(express.json());
