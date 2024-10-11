@@ -1,23 +1,23 @@
-require('dotenv').config(); // Load environment variables from .env
-const express = require("express");
+const express = require("express"); // Import express with non-module
+require("dotenv").config(); // To enable .env called
+const fileUpload = require("express-fileupload"); // This package is to enable req.files
 require("express-async-errors");
-const fileUpload = require("express-fileupload");
-const Router = require("./routes");
+const router = require("./routes");
 const { errorHandler, notFoundURLHandler } = require("./middlewares/errors");
-const router = require("express/lib/router");
 
-// Make initiate express application
+/* Make/initiate expess application */
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Activate to body parser/reader (req.body)
+/* We need to activate body parser/reader */
 app.use(express.json());
 
-// Read form-body (body parser/reader) (req.files) if want to upload file
+
+/* We need to read form-body (body parser/reader) (req.files) if you want upload file */
 app.use(
-  fileUpload({
-    limits: {fileSize: 50 * 1024 * 1024}, // 50 MB
-  })
+    fileUpload({
+        limits: { fileSize: 50 * 1024 * 1024 }, // 50 MB
+    })
 );
 
 // All routes define here
@@ -26,10 +26,10 @@ app.use("/", router);
 // This function is for 404 handle URL
 app.use("*", notFoundURLHandler);
 
-// This function is for hendle error API hit, it always be last middleware
+// This function is to handle error when API hit
 app.use(errorHandler);
 
-// Run the express,js application
+/* Run the express.js application */
 app.listen(port, () => {
-  console.log(`The application is running on port ${port}`);
+    console.log(`The express.js app is runing on port ${port}`);
 });

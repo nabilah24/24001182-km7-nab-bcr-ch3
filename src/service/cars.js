@@ -2,68 +2,73 @@ const carRepository = require("../repositories/cars");
 const { imageUpload } = require("../utils/image-kit");
 const { NotFoundError, InternalServerError } = require("../utils/request");
 
-exports.getCars = (manufacture, model, type) => {
-  return carRepository.getCars(manufacture, model, type);
+exports.getCars = () => {
+    return carRepository.getCars();
 };
 
 exports.getCarById = (id) => {
-  const car = carRepository.getCarById(id);
-  if (!car) {
-    throw new NotFoundError("Car is Not Found!");
-  }
+    const car = carRepository.getCarById(id);
 
-  return car;
+    // Check if car is not found
+    if (!car) { // This should be negated to throw an error when the car is not found
+        throw new NotFoundError("Car is Not Found!");
+    }
+
+    return car; // Return the found car
 };
 
 exports.createCar = async (data, file) => {
-  // Upload file to image kit
-  if (file?.carsImage) {
-    data.carsImage = await imageUpload(file.carsImage);
-  }
-
-  // Create the data
-  return carRepository.createCar(data);
+    // Upload file to image kit
+    if (file?.image) {
+        data.image = await imageUpload(file.image);
+    }
+    return carRepository.createCar(data);
 };
 
 exports.updateCar = async (id, data, file) => {
-  // Find car is exist or not (validate the data)
-  const existingCar = carRepository.getCarById(id);
-  if (!existingCar) {
-    throw new NotFoundError("Car is Not Found!");
-  }
+    // Check if the car exists
+    const existingCar = carRepository.getCarById(id);
+    if (!existingCar) {
+        throw new NotFoundError("Car Not Found!"); // Corrected error message for clarity
+    }
 
-  // Replicated existing data with new data
-  data = {
-    ...existingCar, // existing Car
-    ...data,
-  };
+    // Replicated existing data with new data
+    data = {
+        ...existingCar,
+        ...data,
+    };
 
-  // Upload file to image kit
-  if (file?.carsImage) {
-    data.carsImage = await imageUpload(file.carsImage);
-  }
+    // Upload file to image kit
+    if (file?.image) {
+        // If a new file is uploaded, update the Image
+        data.image = await imageUpload(file.image);
+    } else {
+        // Keep the existing profile picture
+        data.image = existingCar.image;
+    }
 
-  // If exist, it will update the car data
-  const updatedCar = carRepository.updateCar(id, data);
-  if (!updatedCar) {
-    throw InternalServerError(["Failed to update car!"]);
-  }
+    // Attempt to update the car data
+    const updatedCar = carRepository.updateCar(id, data);
+    if (!updatedCar) {
+        throw new InternalServerError(["Failed to update car!"]); // Check if the update failed
+    }
 
-  return updatedCar;
+    // Return the updated car data
+    return updatedCar;
 };
 
 exports.deleteCarById = (id) => {
-  // Find car is exist or not (validate the data)
-  const existingCar = carRepository.getCarById(id);
-  if (!existingCar) {
-    throw new NotFoundError("Car is Not Found!");
-  }
+    // find car is exist or not
+    const existingCar = carRepository.getCarById(id);
+    if (!existingCar) {
+        throw new NotFoundError("Car is Not Found!");
+    }
 
-  // If exist, it will delete the car data
-  const deletedCar = carRepository.deleteCarById(id);
-  if (!deletedCar) {
-    throw new InternalServerError(["Failed to delete car!"]);
-  }
+    // if exist, we will delete the car data
+    const deletedCar = carRepository.deleteCarById(id);
+    if (!deletedCar) {
+        throw new InternalServerError(["Failed to update car!"]);
+    }
 
-  return deletedCar;
+    return deletedCar;
 };
