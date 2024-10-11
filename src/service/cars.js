@@ -10,7 +10,7 @@ exports.getCarById = (id) => {
     const car = carRepository.getCarById(id);
 
     // Check if car is not found
-    if (!car) { // This should be negated to throw an error when the car is not found
+    if (!car) { 
         throw new NotFoundError("Car is Not Found!");
     }
 
